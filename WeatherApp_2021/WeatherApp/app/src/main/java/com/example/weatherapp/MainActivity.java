@@ -40,10 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        //Weather API
-        temp = (TextView) findViewById(R.id.textView);
-        JSONWeatherTask task = new JSONWeatherTask();
-        task.execute(new String[]{"HongKong"});
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -53,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        //Weather API
+        temp = (TextView) findViewById(R.id.textView);
+        JSONWeatherTask task = new JSONWeatherTask();
+        task.execute(new String[]{"HongKong"});
     }
 
 
@@ -61,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Weather doInBackground(String... params) {
             Weather weather = new Weather();
-            String data = ((new WeatherHttpClient()).getWeatherData(params[0]));
+            String data = ((new WeatherHttpClient()).getWeatherData("HongKong")); //params[0]
 
             try {
                 weather = JSONWeatherParser.getWeather(data);
 
                 // Let's retrieve the icon
-                weather.iconData = ((new WeatherHttpClient()).getImage(weather.currentCondition.getIcon()));
+                //weather.iconData = ((new WeatherHttpClient()).getImage(weather.currentCondition.getIcon()));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Weather weather) {
             super.onPostExecute(weather);
-            temp.setText("" + Math.round((weather.temperature.getTemp() - 273.15)) + "�C");
+            temp.setText("" + Math.round((weather.temperature.getTemp() - 273.15)) + "");
         }
     }
 
